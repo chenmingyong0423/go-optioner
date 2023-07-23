@@ -8,9 +8,8 @@ Go -optioner 是一个在 Go 代码中生成函数选项模式的工具。该工
 [English](./README.md) | 中文简体
 
 # 安装
-- 1、`go get github.com/chenmingyong0423/go-optioner/cmd/optioner@latest`
-- 2、`go install github.com/chenmingyong0423/go-optioner/cmd/optioner@latest`
-- 3、执行 `optioner` 命令检查是否安装成功
+- 1、`go install github.com/chenmingyong0423/go-optioner/cmd/optioner@latest`
+- 2、执行 `optioner` 命令检查是否安装成功
 ```
 > optioner
 go-optioner is a tool for generating functional options pattern.
