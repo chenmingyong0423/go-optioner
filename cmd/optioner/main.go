@@ -17,8 +17,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/chenmingyong0423/gkit/stringx"
 	"github.com/chenmingyong0423/go-optioner/options"
+	"github.com/chenmingyong0423/go-optioner/utils"
 	"log"
 	"os"
 )
@@ -45,7 +45,7 @@ func main() {
 		os.Exit(1)
 	}
 	g.StructInfo.StructName = *structTypeNameArg
-	g.StructInfo.NewStructName = stringx.BigCamelToSmallCamel(*structTypeNameArg)
+	g.StructInfo.NewStructName = utils.BigCamelToSmallCamel(*structTypeNameArg)
 	g.SetOutPath(outputArg)
 
 	g.GeneratingOptions()
