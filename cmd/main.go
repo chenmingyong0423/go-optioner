@@ -16,6 +16,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/chenmingyong0423/gkit/stringx"
 	"github.com/chenmingyong0423/go-optioner/options"
 	"log"
@@ -29,12 +30,11 @@ var (
 )
 
 func usage() {
-	log.Printf("go-optioner is a tool for generating functional options pattern.\n")
-	log.Printf("Usage: \n")
-	log.Printf("\t go-optioner [flags]\n")
-	log.Printf("Flags:\n")
-	log.Printf("\t -type <struct name>\n")
-	os.Exit(1)
+	fmt.Fprintf(os.Stderr, "go-optioner is a tool for generating functional options pattern.\n")
+	fmt.Fprintf(os.Stderr, "Usage: \n")
+	fmt.Fprintf(os.Stderr, "\t go-optioner [flags]\n")
+	fmt.Fprintf(os.Stderr, "Flags:\n")
+	fmt.Fprintf(os.Stderr, "\t -type <struct name>\n")
 }
 
 func main() {
