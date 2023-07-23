@@ -80,6 +80,8 @@ func WithGender(gender string) UserOption {
 5、推送到你的 `Fork` 仓库：`git push origin feature/your-feature`
 
 6、创建 `Pull` 请求，将你的更改合并到主仓库。
+
+请确保您的代码遵循项目的编码风格并通过测试。
 # 许可证
 这个项目遵循 [Apache License](https://github.com/chenmingyong0423/go-optioner/blob/main/LICENSE) 许可。
 # 联系我们
