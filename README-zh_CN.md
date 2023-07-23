@@ -77,7 +77,7 @@ func WithGender(gender string) UserOption {
 
 4、提交你的更改：`git commit -m "描述你的修改"`
 
-5、推送到你的Fork仓库：`git push origin feature/your-feature`
+5、推送到你的 `Fork` 仓库：`git push origin feature/your-feature`
 
 6、创建 `Pull` 请求，将你的更改合并到主仓库。
 # 许可证
