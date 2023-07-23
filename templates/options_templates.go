@@ -40,7 +40,7 @@ func New{{ .StructName }}({{ range $index, $field := .Fields }}{{ $field.Name | 
 {{ range $field := .OptionalFields }}
 func With{{ $field.Name }}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option {
 	return func({{ $.NewStructName }} *{{ $.StructName }}) {
-		message.{{ $field.Name }} = {{ $field.Name | bigCamelToSmallCamel }}
+		{{ $.NewStructName }}.{{ $field.Name }} = {{ $field.Name | bigCamelToSmallCamel }}
 	}
 }
 {{ end }}
