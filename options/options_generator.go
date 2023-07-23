@@ -17,8 +17,8 @@ package options
 import (
 	"bytes"
 	"fmt"
+	"github.com/chenmingyong0423/gkit/stringx"
 	"github.com/chenmingyong0423/go-optioner/templates"
-	"github.com/chenmingyong0423/go-optioner/utils"
 	"go/ast"
 	"go/build"
 	"go/format"
@@ -136,7 +136,7 @@ func (g *Generator) parseStruct(fileName string) bool {
 }
 
 func (g *Generator) GenerateCodeByTemplate() {
-	tmpl, err := template.New("options").Funcs(template.FuncMap{"bigCamelToSmallCamel": utils.BigCamelToSmallCamel}).Parse(templates.OptionsTemplateCode)
+	tmpl, err := template.New("options").Funcs(template.FuncMap{"bigCamelToSmallCamel": stringx.BigCamelToSmallCamel}).Parse(templates.OptionsTemplateCode)
 	if err != nil {
 		fmt.Println("Failed to parse template:", err)
 		os.Exit(1)
@@ -169,6 +169,6 @@ func (g *Generator) SetOutPath(outPath *string) {
 	if len(*outPath) > 0 {
 		g.outPath = *outPath
 	} else {
-		g.outPath = fmt.Sprintf("opt_%s_gen.go", utils.CamelToSnake(g.StructInfo.StructName))
+		g.outPath = fmt.Sprintf("opt_%s_gen.go", stringx.CamelToSnake(g.StructInfo.StructName))
 	}
 }
