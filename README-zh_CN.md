@@ -23,6 +23,8 @@ Flags:
 # 快速开始
 - 1、首先，你需要创建一个包含需要生成函数选项模式代码的结构体的 `Go` 文件。在结构体定义之上，你需要添加 `//go:generate optioner -type XXX` 的注释，其中 `XXX` 是结构体的名称。这样工具就能根据参数生成相应的代码。在结构体字段中，您可以使用 `opt` 标签来控制是否为 `NewXXX()` 函数的必传参数和生成相应的函数。
 ```go
+package example
+
 //go:generate optioner -type User
 type User struct {
 	Name   string `opt:"-"`
