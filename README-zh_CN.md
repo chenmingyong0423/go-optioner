@@ -17,6 +17,7 @@ Usage:
          go-optioner [flags]
 Flags:
          -type <struct name>
+         -output <output path>, default: srcDir/opt_xxx_gen.go
 ```
 如果你安装成功了，但是提示 `optioner` 命令找不到，请确认是否已将 `$GOPATH/bin` 添加到环境变量中。
 
