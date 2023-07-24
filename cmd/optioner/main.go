@@ -35,6 +35,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "\t go-optioner [flags]\n")
 	fmt.Fprintf(os.Stderr, "Flags:\n")
 	fmt.Fprintf(os.Stderr, "\t -type <struct name>\n")
+	fmt.Fprintf(os.Stderr, "\t -output <output path>, default: srcDir/opt_xxx_gen.go\n")
 }
 
 func main() {
