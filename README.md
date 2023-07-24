@@ -23,6 +23,8 @@ If you install it successfully and the `optioner` command is not found, make sur
 # Quick Start
 - 1、First, you need to create a `Go` file containing the struct definition for which you want to generate the function options pattern. Above the struct definition, add the `//go:generate optioner -type XXX` comment, where `XXX` is the name of the struct. This will enable the tool to generate the corresponding code based on the provided parameter. In the struct fields, you can use the `opt` tag to control whether to generate the corresponding functions and whether the field is a required parameter for the `NewXXX()` function.
 ```go
+package example
+
 //go:generate optioner -type User
 type User struct {
 	Name   string `opt:"-"`
