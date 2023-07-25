@@ -12,7 +12,7 @@ go-optioner 是一个在 Go 代码中生成函数选项模式代码的工具。�
 - 2、执行 `optioner` 命令检查是否安装成功
 ```
 > optioner
-optioner is a tool for generating functional options pattern.
+go-optioner is a tool for generating functional options pattern.
 Usage: 
          optioner [flags]
 Flags:
