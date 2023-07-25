@@ -12,9 +12,9 @@ English | [中文简体](./README-zh_CN.md)
 - 2、Run the `optioner` command to check if the installation is successful.
 ```
 > optioner
-go-optioner is a tool for generating functional options pattern.
+optioner is a tool for generating functional options pattern.
 Usage: 
-         go-optioner [flags]
+         optioner [flags]
 Flags:
          -type <struct name>
          -output <output path>, default: srcDir/opt_xxx_gen.go
