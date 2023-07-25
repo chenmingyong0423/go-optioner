@@ -12,7 +12,7 @@ English | [中文简体](./README-zh_CN.md)
 - 2、Run the `optioner` command to check if the installation is successful.
 ```
 > optioner
-optioner is a tool for generating functional options pattern.
+go-optioner is a tool for generating functional options pattern.
 Usage: 
          optioner [flags]
 Flags:
