@@ -27,7 +27,6 @@ import (
 	"html/template"
 	"log"
 	"os"
-	"path"
 	"reflect"
 	"strings"
 )
@@ -169,7 +168,7 @@ func (g *Generator) forMart() []byte {
 func (g *Generator) SetOutPath(outPath *string) {
 	fileName := fmt.Sprintf("opt_%s_gen.go", stringx.CamelToSnake(g.StructInfo.StructName))
 	if len(*outPath) > 0 {
-		g.outPath = path.Join(*outPath, fileName)
+		g.outPath = *outPath
 	} else {
 		g.outPath = fileName
 	}
