@@ -27,6 +27,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"path"
 	"reflect"
 	"strings"
 )
@@ -154,7 +155,7 @@ func (g *Generator) OutputToFile() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Generating Functional Options Code Successful.\nOut: %s\n", g.outPath)
+	fmt.Printf("Generating Functional Options Code Successfully.\nOut: %s\n", g.outPath)
 }
 
 func (g *Generator) forMart() []byte {
@@ -166,9 +167,10 @@ func (g *Generator) forMart() []byte {
 }
 
 func (g *Generator) SetOutPath(outPath *string) {
+	fileName := fmt.Sprintf("opt_%s_gen.go", stringx.CamelToSnake(g.StructInfo.StructName))
 	if len(*outPath) > 0 {
-		g.outPath = *outPath
+		g.outPath = path.Join(*outPath, fileName)
 	} else {
-		g.outPath = fmt.Sprintf("opt_%s_gen.go", stringx.CamelToSnake(g.StructInfo.StructName))
+		g.outPath = fileName
 	}
 }
