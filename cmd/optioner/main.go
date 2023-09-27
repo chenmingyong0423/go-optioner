@@ -54,7 +54,7 @@ func main() {
 		log.Printf("Target \"[%s]\" is not be found\n", g.StructInfo.StructName)
 		os.Exit(1)
 	}
-
+	fmt.Println(g.StructInfo.OptionalFields)
 	g.GenerateCodeByTemplate()
 	g.OutputToFile()
 }

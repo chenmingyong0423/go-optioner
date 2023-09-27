@@ -28,6 +28,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -59,6 +60,8 @@ type StructInfo struct {
 	NewStructName  string
 	Fields         []FieldInfo
 	OptionalFields []FieldInfo
+
+	Imports []string
 }
 
 func (g *Generator) GeneratingOptions() {
@@ -99,14 +102,19 @@ func (g *Generator) parseStruct(fileName string) bool {
 			if structDecl, ok := typeSpec.Type.(*ast.StructType); ok {
 				log.Printf("Generating Struct \"%s\" \n", g.StructInfo.StructName)
 				for _, field := range structDecl.Fields.List {
+					fieldName := ""
 					if len(field.Names) == 0 {
-						continue
+						if ident, ok := field.Type.(*ast.Ident); ok { // combined struct
+							fieldName = ident.Name
+						} else {
+							continue
+						}
+					} else {
+						fieldName = field.Names[0].Name
 					}
-
 					optionIgnore := false
 
-					fieldName := field.Names[0].Name
-					fieldType := field.Type.(*ast.Ident).Name
+					fieldType := g.getTypeName(field.Type)
 					if field.Tag != nil {
 						tags := strings.Replace(field.Tag.Value, "`", "", -1)
 						tag := reflect.StructTag(tags).Get("opt")
@@ -126,6 +134,8 @@ func (g *Generator) parseStruct(fileName string) bool {
 					}
 					log.Printf("Generating Struct Field \"%s\" of type \"%s\"\n", fieldName, fieldType)
 				}
+				// 收集 package 信息
+				g.CollectImports(file)
 				return true
 			} else {
 				log.Fatal(fmt.Sprintf("Target[%s] type is not a struct", g.StructInfo.StructName))
@@ -136,7 +146,7 @@ func (g *Generator) parseStruct(fileName string) bool {
 }
 
 func (g *Generator) GenerateCodeByTemplate() {
-	tmpl, err := template.New("options").Funcs(template.FuncMap{"bigCamelToSmallCamel": stringx.BigCamelToSmallCamel}).Parse(templates.OptionsTemplateCode)
+	tmpl, err := template.New("options").Funcs(template.FuncMap{"bigCamelToSmallCamel": stringx.BigCamelToSmallCamel, "capitalizeFirstLetter": stringx.CapitalizeFirstLetter}).Parse(templates.OptionsTemplateCode)
 	if err != nil {
 		fmt.Println("Failed to parse template:", err)
 		os.Exit(1)
@@ -171,5 +181,79 @@ func (g *Generator) SetOutPath(outPath *string) {
 		g.outPath = *outPath
 	} else {
 		g.outPath = fileName
+	}
+}
+
+func (g *Generator) getTypeName(expr ast.Expr) string {
+	switch t := expr.(type) {
+	case *ast.Ident:
+		return t.Name
+	case *ast.SelectorExpr:
+		return fmt.Sprintf("%s.%s", g.getTypeName(t.X), t.Sel.Name)
+	case *ast.ArrayType:
+		if t.Len == nil {
+			return "[]" + g.getTypeName(t.Elt)
+		}
+		if basicLit, ok := t.Len.(*ast.BasicLit); ok && basicLit.Kind == token.INT {
+			return "[" + basicLit.Value + "]" + g.getTypeName(t.Elt)
+		} else {
+			log.Fatalf("Array len error: %T", t)
+			return ""
+		}
+	case *ast.MapType:
+		return fmt.Sprintf("map[%s]%s", g.getTypeName(t.Key), g.getTypeName(t.Value))
+	case *ast.StarExpr:
+		return "*" + g.getTypeName(t.X)
+	//case *ast.InterfaceType:
+	//	return "" // ignore
+	case *ast.StructType:
+		return "struct{}"
+	case *ast.FuncType:
+		return g.parseFuncType(t)
+	case *ast.ChanType:
+		return "chan " + g.getTypeName(t.Value)
+	default:
+		log.Fatalf("Unsupported type for field: %T", t)
+		return ""
+	}
+}
+
+func (g *Generator) parseFuncType(f *ast.FuncType) string {
+	var params, results []string
+	if f.Params != nil {
+		for _, field := range f.Params.List {
+			paramType := g.getTypeName(field.Type)
+			for _, name := range field.Names {
+				params = append(params, fmt.Sprintf("%s %s", name.Name, paramType))
+			}
+		}
+	}
+
+	if f.Results != nil {
+		for _, field := range f.Results.List {
+			resultType := g.getTypeName(field.Type)
+			if len(field.Names) > 0 {
+				for _, name := range field.Names {
+					results = append(results, fmt.Sprintf("%s %s", name.Name, resultType))
+				}
+			} else {
+				results = append(results, resultType)
+			}
+		}
+	}
+
+	if len(results) == 1 {
+		return fmt.Sprintf("func(%s) %s", strings.Join(params, ", "), results[0])
+	}
+	return fmt.Sprintf("func(%s) (%s)", strings.Join(params, ", "), strings.Join(results, ", "))
+}
+
+func (g *Generator) CollectImports(file *ast.File) {
+	for _, imp := range file.Imports {
+		path, err := strconv.Unquote(imp.Path.Value)
+		if err != nil {
+			log.Fatalf("Failed to unquote import path: %v", err)
+		}
+		g.StructInfo.Imports = append(g.StructInfo.Imports, path)
 	}
 }

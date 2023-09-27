@@ -21,6 +21,14 @@ const OptionsTemplateCode = `
 
 package {{ .PackageName }}
 
+{{ if .Imports }}
+import (
+    {{ range .Imports }}
+    "{{ . }}"
+    {{ end }}
+)
+{{ end }}
+
 type {{ .StructName }}Option func(*{{ .StructName }})
 
 func New{{ .StructName }}({{ range $index, $field := .Fields }}{{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }},{{ end }} opts ...{{ .StructName }}Option) *{{ .StructName }} {
@@ -38,7 +46,7 @@ func New{{ .StructName }}({{ range $index, $field := .Fields }}{{ $field.Name | 
 
 {{ if .OptionalFields }}
 {{ range $field := .OptionalFields }}
-func With{{ $field.Name }}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option {
+func With{{ $field.Name | capitalizeFirstLetter }}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option {
 	return func({{ $.NewStructName }} *{{ $.StructName }}) {
 		{{ $.NewStructName }}.{{ $field.Name }} = {{ $field.Name | bigCamelToSmallCamel }}
 	}
