@@ -14,8 +14,9 @@
 
 package example
 
-type Example[T any] struct {
+type GenericExample[T any, U comparable, V ~int] struct {
 	A T `opt:"-"`
-	B T
-	C int
+	B U
+	C V
+	D string
 }
