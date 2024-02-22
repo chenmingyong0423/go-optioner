@@ -17,8 +17,6 @@ package options
 import (
 	"bytes"
 	"fmt"
-	"github.com/chenmingyong0423/gkit/stringx"
-	"github.com/chenmingyong0423/go-optioner/templates"
 	"go/ast"
 	"go/build"
 	"go/format"
@@ -30,6 +28,9 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/chenmingyong0423/gkit/stringx"
+	"github.com/chenmingyong0423/go-optioner/templates"
 )
 
 type Generator struct {
@@ -226,6 +227,8 @@ func (g *Generator) getTypeName(expr ast.Expr) string {
 		return g.parseFuncType(t)
 	case *ast.ChanType:
 		return "chan " + g.getTypeName(t.Value)
+	case *ast.UnaryExpr:
+		return "~" + g.getTypeName(t.X)
 	default:
 		log.Fatalf("Unsupported type for field: %T", t)
 		return ""
