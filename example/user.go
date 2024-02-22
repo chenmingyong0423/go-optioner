@@ -18,7 +18,32 @@ import (
 	"github.com/chenmingyong0423/go-optioner/example/third_party"
 )
 
+type Embedded struct{}
+
+type Embedded2 struct{}
+
+type Embedded3 struct{}
+
+type Embedded4 struct{}
+
+type Embedded5 struct{}
+
+type Embedded6 struct{}
+
+type Embedded7 struct{}
+
+type Embedded8 struct{}
+
+//go:generate go run ../cmd/optioner/main.go -type User
 type User struct {
+	Embedded   `opt:"-"`
+	*Embedded2 `opt:"-"`
+	E3         Embedded3  `opt:"-"`
+	E4         *Embedded4 `opt:"-"`
+	Embedded5
+	*Embedded6
+	E7                 Embedded7
+	E8                 *Embedded8
 	Username           string
 	Email              string
 	Address            // combined struct

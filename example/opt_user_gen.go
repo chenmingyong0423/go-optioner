@@ -10,14 +10,43 @@ import (
 
 type UserOption func(*User)
 
-func NewUser(opts ...UserOption) *User {
-	user := &User{}
+func NewUser(embedded Embedded, embedded2 *Embedded2, e3 Embedded3, e4 *Embedded4, opts ...UserOption) *User {
+	user := &User{
+		Embedded:  embedded,
+		Embedded2: embedded2,
+		E3:        e3,
+		E4:        e4,
+	}
 
 	for _, opt := range opts {
 		opt(user)
 	}
 
 	return user
+}
+
+func WithEmbedded5(embedded5 Embedded5) UserOption {
+	return func(user *User) {
+		user.Embedded5 = embedded5
+	}
+}
+
+func WithEmbedded6(embedded6 *Embedded6) UserOption {
+	return func(user *User) {
+		user.Embedded6 = embedded6
+	}
+}
+
+func WithE7(e7 Embedded7) UserOption {
+	return func(user *User) {
+		user.E7 = e7
+	}
+}
+
+func WithE8(e8 *Embedded8) UserOption {
+	return func(user *User) {
+		user.E8 = e8
+	}
 }
 
 func WithUsername(username string) UserOption {
