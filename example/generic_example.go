@@ -14,6 +14,7 @@
 
 package example
 
+//go:generate go run ../cmd/optioner/main.go -type GenericExample
 type GenericExample[T any, U comparable, V ~int] struct {
 	A T `opt:"-"`
 	B U

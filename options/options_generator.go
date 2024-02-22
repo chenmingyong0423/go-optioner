@@ -121,6 +121,12 @@ func (g *Generator) parseStruct(fileName string) bool {
 					if len(field.Names) == 0 {
 						if ident, ok := field.Type.(*ast.Ident); ok { // combined struct
 							fieldName = ident.Name
+						} else if starExpr, ok := field.Type.(*ast.StarExpr); ok {
+							if ident2, ok := starExpr.X.(*ast.Ident); ok { // combined struct
+								fieldName = ident2.Name
+							} else {
+								continue
+							}
 						} else {
 							continue
 						}
