@@ -60,6 +60,7 @@ type StructInfo struct {
 	NewStructName  string
 	Fields         []FieldInfo
 	OptionalFields []FieldInfo
+	GenericParams  []FieldInfo
 
 	Imports []string
 }
@@ -101,6 +102,19 @@ func (g *Generator) parseStruct(fileName string) bool {
 			}
 			if structDecl, ok := typeSpec.Type.(*ast.StructType); ok {
 				log.Printf("Generating Struct \"%s\" \n", g.StructInfo.StructName)
+				if typeSpec.TypeParams != nil {
+					log.Println("This is a struct which contains generic type:", typeSpec.Name)
+					for _, param := range typeSpec.TypeParams.List {
+						for _, name := range param.Names {
+							typ := g.getTypeName(param.Type)
+							g.StructInfo.GenericParams = append(g.StructInfo.GenericParams, FieldInfo{
+								Name: name.Name,
+								Type: typ,
+							})
+							log.Printf("Generic parameter: %s %s\n", name.Name, typ)
+						}
+					}
+				}
 				for _, field := range structDecl.Fields.List {
 					fieldName := ""
 					if len(field.Names) == 0 {

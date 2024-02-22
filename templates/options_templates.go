@@ -29,10 +29,10 @@ import (
 )
 {{ end }}
 
-type {{ .StructName }}Option func(*{{ .StructName }})
+type {{ .StructName }}Option{{if .GenericParams}}[{{range $index, $param := .GenericParams}}{{if $index}}, {{end}}{{$param.Name}} {{$param.Type}}{{end}}]{{end}} func(*{{ .StructName }}{{if .GenericParams}}[{{range $index, $param := .GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}})
 
-func New{{ .StructName }}({{ range $index, $field := .Fields }}{{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }},{{ end }} opts ...{{ .StructName }}Option) *{{ .StructName }} {
-	{{ .NewStructName }} := &{{ .StructName }}{
+func New{{ .StructName }}{{if .GenericParams}}[{{range $index, $param := .GenericParams}}{{if $index}}, {{end}}{{$param.Name}} {{$param.Type}}{{end}}]{{end}}({{ range $index, $field := .Fields }}{{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }},{{ end }} opts ...{{ .StructName }}Option{{if .GenericParams}}[{{range $index, $param := .GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}}) *{{ .StructName }}{{if .GenericParams}}[{{range $index, $param := .GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}} {
+	{{ .NewStructName }} := &{{ .StructName }}{{if .GenericParams}}[{{range $index, $param := .GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}}{
 		{{ range $index, $field := .Fields }}{{ $field.Name }}: {{ $field.Name | bigCamelToSmallCamel }},
 		{{ end }}
 	}
@@ -46,7 +46,7 @@ func New{{ .StructName }}({{ range $index, $field := .Fields }}{{ $field.Name | 
 
 {{ if .OptionalFields }}
 {{ range $field := .OptionalFields }}
-func With{{ $field.Name | capitalizeFirstLetter }}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option {
+func With{{ $field.Name | capitalizeFirstLetter }}{{if $.GenericParams}}[{{range $index, $param := $.GenericParams}}{{if $index}}, {{end}}{{$param.Name}} {{$param.Type}}{{end}}]{{end}}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option {
 	return func({{ $.NewStructName }} *{{ $.StructName }}) {
 		{{ $.NewStructName }}.{{ $field.Name }} = {{ $field.Name | bigCamelToSmallCamel }}
 	}
