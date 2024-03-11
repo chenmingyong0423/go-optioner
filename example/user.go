@@ -38,6 +38,14 @@ type Embedded7 struct{}
 
 type Embedded8 struct{}
 
+//go:generate go run ../cmd/optioner/main.go -type GenericExample
+type GenericExample[T any, U comparable, V ~int] struct {
+	A T `opt:"-"`
+	B U
+	C V
+	D string
+}
+
 //go:generate go run ../cmd/optioner/main.go -type User
 type User struct {
 	Embedded   `opt:"-"`
