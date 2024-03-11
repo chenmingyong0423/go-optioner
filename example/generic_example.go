@@ -14,6 +14,11 @@
 
 package example
 
+import "context"
+
+// 用于添加 "context" 导包信息，以便在生成代码时判断是否成功去除该无用包信息
+var _ context.Context
+
 //go:generate go run ../cmd/optioner/main.go -type GenericExample
 type GenericExample[T any, U comparable, V ~int] struct {
 	A T `opt:"-"`

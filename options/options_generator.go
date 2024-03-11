@@ -17,20 +17,19 @@ package options
 import (
 	"bytes"
 	"fmt"
+	"github.com/chenmingyong0423/gkit/stringx"
+	"github.com/chenmingyong0423/go-optioner/templates"
 	"go/ast"
 	"go/build"
-	"go/format"
 	"go/parser"
 	"go/token"
+	"golang.org/x/tools/imports"
 	"html/template"
 	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
-
-	"github.com/chenmingyong0423/gkit/stringx"
-	"github.com/chenmingyong0423/go-optioner/templates"
 )
 
 type Generator struct {
@@ -189,9 +188,9 @@ func (g *Generator) OutputToFile() {
 }
 
 func (g *Generator) forMart() []byte {
-	source, err := format.Source(g.buf.Bytes())
+	source, err := imports.Process("", g.buf.Bytes(), nil)
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 	return source
 }

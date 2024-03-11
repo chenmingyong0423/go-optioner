@@ -15,8 +15,12 @@
 package example
 
 import (
+	"context"
 	"github.com/chenmingyong0423/go-optioner/example/third_party"
 )
+
+// 用于添加 "context" 导包信息，以便在生成代码时判断是否成功去除该无用包信息
+var _ context.Context
 
 type Embedded struct{}
 
