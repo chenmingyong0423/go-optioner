@@ -4,9 +4,7 @@
 
 package example
 
-import (
-	"github.com/chenmingyong0423/go-optioner/example/third_party"
-)
+import "github.com/chenmingyong0423/go-optioner/example/third_party"
 
 type UserOption func(*User)
 

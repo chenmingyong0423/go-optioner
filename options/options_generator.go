@@ -28,7 +28,6 @@ import (
 	"log"
 	"os"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -154,8 +153,6 @@ func (g *Generator) parseStruct(fileName string) bool {
 					}
 					log.Printf("Generating Struct Field \"%s\" of type \"%s\"\n", fieldName, fieldType)
 				}
-				// 收集 package 信息
-				g.CollectImports(file)
 				return true
 			} else {
 				log.Fatal(fmt.Sprintf("Target[%s] type is not a struct", g.StructInfo.StructName))
@@ -268,14 +265,4 @@ func (g *Generator) parseFuncType(f *ast.FuncType) string {
 		return fmt.Sprintf("func(%s) %s", strings.Join(params, ", "), results[0])
 	}
 	return fmt.Sprintf("func(%s) (%s)", strings.Join(params, ", "), strings.Join(results, ", "))
-}
-
-func (g *Generator) CollectImports(file *ast.File) {
-	for _, imp := range file.Imports {
-		path, err := strconv.Unquote(imp.Path.Value)
-		if err != nil {
-			log.Fatalf("Failed to unquote import path: %v", err)
-		}
-		g.StructInfo.Imports = append(g.StructInfo.Imports, path)
-	}
 }
