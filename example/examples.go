@@ -39,6 +39,8 @@ type Embedded7 struct{}
 type Embedded8 struct{}
 
 //go:generate go run ../cmd/optioner/main.go -type GenericExample
+//go:generate go run ../cmd/optioner/main.go -type GenericExample -output ./generic_example_option.go
+//go:generate go run ../cmd/optioner/main.go -type GenericExample -mode append -output ./additional_generic_example_option.go
 type GenericExample[T any, U comparable, V ~int] struct {
 	A T `opt:"-"`
 	B U
@@ -47,6 +49,8 @@ type GenericExample[T any, U comparable, V ~int] struct {
 }
 
 //go:generate go run ../cmd/optioner/main.go -type User
+//go:generate go run ../cmd/optioner/main.go -type User -output ./user_option.go
+//go:generate go run ../cmd/optioner/main.go -type User -mode append -output ./additional_user_option.go
 type User struct {
 	Embedded   `opt:"-"`
 	*Embedded2 `opt:"-"`

@@ -27,6 +27,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 )
@@ -34,9 +35,11 @@ import (
 type Generator struct {
 	StructInfo *StructInfo
 	outPath    string
+	mode       string
 
-	buf   bytes.Buffer
-	Found bool
+	code   bytes.Buffer
+	header bytes.Buffer
+	Found  bool
 }
 
 func NewGenerator() *Generator {
@@ -110,7 +113,6 @@ func (g *Generator) parseStruct(fileName string) bool {
 								Name: name.Name,
 								Type: typ,
 							})
-							log.Printf("Generic parameter: %s %s\n", name.Name, typ)
 						}
 					}
 				}
@@ -151,7 +153,6 @@ func (g *Generator) parseStruct(fileName string) bool {
 							Type: fieldType,
 						})
 					}
-					log.Printf("Generating Struct Field \"%s\" of type \"%s\"\n", fieldName, fieldType)
 				}
 				return true
 			} else {
@@ -163,29 +164,70 @@ func (g *Generator) parseStruct(fileName string) bool {
 }
 
 func (g *Generator) GenerateCodeByTemplate() {
-	tmpl, err := template.New("options").Funcs(template.FuncMap{"bigCamelToSmallCamel": stringx.BigCamelToSmallCamel, "capitalizeFirstLetter": stringx.CapitalizeFirstLetter}).Parse(templates.OptionsTemplateCode)
+	var (
+		headerTmpl *template.Template
+		tmpl       *template.Template
+		err        error
+	)
+	if g.mode == "append" {
+		headerTmpl, err = template.New("header_options").Parse(templates.GeneratedHeader)
+		if err != nil {
+			log.Fatal("Failed to parse header template:", err)
+		}
+		err = headerTmpl.Execute(&g.header, g.StructInfo)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	tmpl = template.New("options").Funcs(template.FuncMap{"bigCamelToSmallCamel": stringx.BigCamelToSmallCamel, "capitalizeFirstLetter": stringx.CapitalizeFirstLetter})
+	if g.mode == "write" {
+		tmpl, err = tmpl.Parse(templates.OptionsTemplateCode)
+	} else {
+		tmpl, err = tmpl.Parse(templates.AdditionalTemplateCode)
+	}
 	if err != nil {
-		fmt.Println("Failed to parse template:", err)
-		os.Exit(1)
+		log.Fatal("Failed to parse template:", err)
 	}
 
-	err = tmpl.Execute(&g.buf, g.StructInfo)
+	err = tmpl.Execute(&g.code, g.StructInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
 func (g *Generator) OutputToFile() {
-	src := g.forMart()
+	var src []byte
+	if g.mode == "write" {
+		dir := filepath.Dir(g.outPath)
+		err := os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			log.Fatal("mkdir failed, error: ", err)
+		}
+		src = g.forMart()
+	} else {
+		readFile, err := os.ReadFile(g.outPath)
+		if err != nil {
+			log.Fatal("Open the specified file failed, error: ", err)
+		}
+		header := g.header.Bytes()
+		if !bytes.HasPrefix(readFile, header) {
+			readFile = append(header, readFile...)
+		}
+		readFile = append(readFile, g.code.Bytes()...)
+		src, err = imports.Process("", readFile, nil)
+		if err != nil {
+			log.Fatal("Failed to format the generated code: ", err, ", the grammar of the specified file code maybe incorrect.")
+		}
+	}
 	err := os.WriteFile(g.outPath, src, 0644)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("write file failed, error: ", err)
 	}
 	fmt.Printf("Generating Functional Options Code Successfully.\nOut: %s\n", g.outPath)
 }
 
 func (g *Generator) forMart() []byte {
-	source, err := imports.Process("", g.buf.Bytes(), nil)
+	source, err := imports.Process("", g.code.Bytes(), nil)
 	if err != nil {
 		return nil
 	}
@@ -265,4 +307,8 @@ func (g *Generator) parseFuncType(f *ast.FuncType) string {
 		return fmt.Sprintf("func(%s) %s", strings.Join(params, ", "), results[0])
 	}
 	return fmt.Sprintf("func(%s) (%s)", strings.Join(params, ", "), strings.Join(results, ", "))
+}
+
+func (g *Generator) SetMod(mode string) {
+	g.mode = mode
 }

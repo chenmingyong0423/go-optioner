@@ -23,10 +23,33 @@ import (
 	"os"
 )
 
+type ModeValue struct {
+	value       string
+	validValues []string
+}
+
+func (m *ModeValue) String() string {
+	return m.value
+}
+
+func (m *ModeValue) Set(s string) error {
+	for _, v := range m.validValues {
+		if s == v {
+			m.value = s
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid value %q for mode, valid values are: %v", s, m.validValues)
+}
+
 var (
-	structTypeNameArg = flag.String("type", "", "Struct type name of the functional options struct.")
-	outputArg         = flag.String("output", "", "Output file name, default: srcDir/opt_<struct type>_gen.go")
-	g                 = options.NewGenerator()
+	outputMode = ModeValue{
+		value:       "write",
+		validValues: []string{"write", "append"},
+	}
+	structTypeName = flag.String("type", "", "Struct type name of the functional options struct.")
+	output         = flag.String("output", "", "Output file name, default: srcDir/opt_<struct type>_gen.go")
+	g              = options.NewGenerator()
 )
 
 func usage() {
@@ -36,25 +59,31 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "Flags:\n")
 	fmt.Fprintf(os.Stderr, "\t -type <struct name>\n")
 	fmt.Fprintf(os.Stderr, "\t -output <output path>, default: srcDir/opt_xxx_gen.go\n")
+	fmt.Fprintf(os.Stderr, "\t -mode <the file writing mode>, default: write\n")
+	fmt.Fprintf(os.Stderr, "\t there are two available modes:\n")
+	fmt.Fprintf(os.Stderr, "\t\t - write(Write/Overwrite): Overwrites or creates a new file.\n")
+	fmt.Fprintf(os.Stderr, "\t\t - append (Append): Adds to the end of the file.\n")
+
 }
 
 func main() {
+	flag.Var(&outputMode, "mode", "The file writing mode, default: write")
 	flag.Usage = usage
 	flag.Parse()
-	if len(*structTypeNameArg) == 0 {
+	if len(*structTypeName) == 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
-	g.StructInfo.StructName = *structTypeNameArg
-	g.StructInfo.NewStructName = stringx.BigCamelToSmallCamel(*structTypeNameArg)
-	g.SetOutPath(outputArg)
+	g.StructInfo.StructName = *structTypeName
+	g.StructInfo.NewStructName = stringx.BigCamelToSmallCamel(*structTypeName)
+	g.SetOutPath(output)
+	g.SetMod(outputMode.value)
 
 	g.GeneratingOptions()
 	if !g.Found {
 		log.Printf("Target \"[%s]\" is not be found\n", g.StructInfo.StructName)
 		os.Exit(1)
 	}
-	fmt.Println(g.StructInfo.OptionalFields)
 	g.GenerateCodeByTemplate()
 	g.OutputToFile()
 }
