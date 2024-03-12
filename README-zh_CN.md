@@ -2,6 +2,13 @@
   go-optioner
 </h1>
 
+[![GitHub Repo stars](https://img.shields.io/github/stars/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner/issues)
+[![GitHub License](https://img.shields.io/github/license/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner/blob/main/LICENSE)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner)
+[![Go Report Card](https://goreportcard.com/badge/github.com/chenmingyong0423/go-optioner)](https://goreportcard.com/report/github.com/chenmingyong0423/go-optioner)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 `go-optioner` 是一个在 Go 代码中生成函数选项模式代码的工具。该工具可以根据给定的结构定义自动生成相应的选项代码。
 
 ---
