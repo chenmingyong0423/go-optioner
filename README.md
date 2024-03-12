@@ -2,6 +2,13 @@
   go-optioner
 </h1>
 
+[![GitHub Repo stars](https://img.shields.io/github/stars/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner/issues)
+[![GitHub License](https://img.shields.io/github/license/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner/blob/main/LICENSE)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/chenmingyong0423/go-optioner)](https://github.com/chenmingyong0423/go-optioner)
+[![Go Report Card](https://goreportcard.com/badge/github.com/chenmingyong0423/go-optioner)](https://goreportcard.com/report/github.com/chenmingyong0423/go-optioner)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 `go-optioner` is a tool for generating functional options pattern in Go code. This tool can automatically generate corresponding options code based on the given struct definition.
 
 ---
