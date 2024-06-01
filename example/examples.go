@@ -16,6 +16,7 @@ package example
 
 import (
 	"context"
+
 	"github.com/chenmingyong0423/go-optioner/example/third_party"
 )
 
@@ -38,7 +39,7 @@ type Embedded7 struct{}
 
 type Embedded8 struct{}
 
-//go:generate go run ../cmd/optioner/main.go -type GenericExample
+//go:generate go run ../cmd/optioner/main.go -type GenericExample -with_prefix Example
 //go:generate go run ../cmd/optioner/main.go -type GenericExample -output ./generic_example_option.go
 //go:generate go run ../cmd/optioner/main.go -type GenericExample -mode append -output ./additional_generic_example_option.go
 type GenericExample[T any, U comparable, V ~int] struct {

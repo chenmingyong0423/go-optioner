@@ -17,19 +17,20 @@ package options
 import (
 	"bytes"
 	"fmt"
-	"github.com/chenmingyong0423/gkit/stringx"
-	"github.com/chenmingyong0423/go-optioner/templates"
 	"go/ast"
 	"go/build"
 	"go/parser"
 	"go/token"
-	"golang.org/x/tools/imports"
 	"html/template"
 	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
+
+	"github.com/chenmingyong0423/gkit/stringx"
+	"github.com/chenmingyong0423/go-optioner/templates"
+	"golang.org/x/tools/imports"
 )
 
 type Generator struct {
@@ -65,6 +66,8 @@ type StructInfo struct {
 	GenericParams  []FieldInfo
 
 	Imports []string
+
+	WithPrefix string
 }
 
 func (g *Generator) GeneratingOptions() {
@@ -156,7 +159,7 @@ func (g *Generator) parseStruct(fileName string) bool {
 				}
 				return true
 			} else {
-				log.Fatal(fmt.Sprintf("Target[%s] type is not a struct", g.StructInfo.StructName))
+				log.Fatalf(fmt.Sprintf("Target[%s] type is not a struct", g.StructInfo.StructName))
 			}
 		}
 	}
@@ -311,4 +314,8 @@ func (g *Generator) parseFuncType(f *ast.FuncType) string {
 
 func (g *Generator) SetMod(mode string) {
 	g.mode = mode
+}
+
+func (g *Generator) SetWithPrefix(withPrefix string) {
+	g.StructInfo.WithPrefix = withPrefix
 }
