@@ -17,10 +17,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/chenmingyong0423/gkit/stringx"
-	"github.com/chenmingyong0423/go-optioner/options"
 	"log"
 	"os"
+
+	"github.com/chenmingyong0423/gkit/stringx"
+	"github.com/chenmingyong0423/go-optioner/options"
 )
 
 type ModeValue struct {
@@ -49,7 +50,9 @@ var (
 	}
 	structTypeName = flag.String("type", "", "Struct type name of the functional options struct.")
 	output         = flag.String("output", "", "Output file name, default: srcDir/opt_<struct type>_gen.go")
-	g              = options.NewGenerator()
+	// 生成 With{filed_name} 时的前缀，例如 WithName。如果指定了前缀 User，则生成 WithUserName
+	withPrefix string
+	g          = options.NewGenerator()
 )
 
 func usage() {
@@ -59,6 +62,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "Flags:\n")
 	fmt.Fprintf(os.Stderr, "\t -type <struct name>\n")
 	fmt.Fprintf(os.Stderr, "\t -output <output path>, default: srcDir/opt_xxx_gen.go\n")
+	fmt.Fprintf(os.Stderr, "\t -with_prefix <the prefix of the With{filed_name} function>, default is With{filed_name}.If specified, such as User, it will generate WithUser{filed_name}\n")
 	fmt.Fprintf(os.Stderr, "\t -mode <the file writing mode>, default: write\n")
 	fmt.Fprintf(os.Stderr, "\t there are two available modes:\n")
 	fmt.Fprintf(os.Stderr, "\t\t - write(Write/Overwrite): Overwrites or creates a new file.\n")
@@ -68,6 +72,7 @@ func usage() {
 
 func main() {
 	flag.Var(&outputMode, "mode", "The file writing mode, default: write")
+	flag.StringVar(&withPrefix, "with_prefix", "", "The prefix of the With{filed_name} function, default is With{filed_name}.If specified, such as User, it will generate WithUser{filed_name}")
 	flag.Usage = usage
 	flag.Parse()
 	if len(*structTypeName) == 0 {
@@ -78,6 +83,7 @@ func main() {
 	g.StructInfo.NewStructName = stringx.BigCamelToSmallCamel(*structTypeName)
 	g.SetOutPath(output)
 	g.SetMod(outputMode.value)
+	g.SetWithPrefix(withPrefix)
 
 	g.GeneratingOptions()
 	if !g.Found {

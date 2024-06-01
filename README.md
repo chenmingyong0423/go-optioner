@@ -26,6 +26,7 @@ Usage:
 Flags:
          -type <struct name>
          -output <output path>, default: srcDir/opt_xxx_gen.go
+         -with_prefix <the prefix of the With{filed_name} function>, default is With{filed_name}.If specified, such as User, it will generate WithUser{filed_name}
          -mode <the file writing mode>, default: write
          there are two available modes:
                  - write(Write/Overwrite): Overwrites or creates a new file.
@@ -38,7 +39,8 @@ When using `Optioner`, you can customize its behavior with the following paramet
 
 - `-type`: Specifies the name of the target struct. This is a required parameter.
 - `-output`: Sets the output file path for the generated code. This is an optional parameter, with the default file name format being `opt_{StructName}_gen.go`, where `{StructName}` is the name of the struct. The file is placed in the current directory by default.
-- `mode`: Determines the file writing mode, with two available options:
+- `-with_prefix`: Sets the prefix for the `With{field_name}` function. This is an optional parameter with a default value of `With{field_name}`. If a prefix is specified, such as User, the generated function name will become `WithUser{field_name}`.
+- `-mode`: Determines the file writing mode, with two available options:
   - `write` (Write/Overwrite): Overwrites the file if it exists or creates a new one if it does not.
   - `append` (Append): Adds content to the end of an existing file.
 

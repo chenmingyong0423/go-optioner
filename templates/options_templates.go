@@ -38,7 +38,7 @@ func New{{ .StructName }}{{if .GenericParams}}[{{range $index, $param := .Generi
 
 {{ if .OptionalFields }}
 {{ range $field := .OptionalFields }}
-func With{{ $field.Name | capitalizeFirstLetter }}{{if $.GenericParams}}[{{range $index, $param := $.GenericParams}}{{if $index}}, {{end}}{{$param.Name}} {{$param.Type}}{{end}}]{{end}}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option{{if $.GenericParams}}[{{range $index, $param := $.GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}} {
+func With{{ $.WithPrefix }}{{ $field.Name | capitalizeFirstLetter }}{{if $.GenericParams}}[{{range $index, $param := $.GenericParams}}{{if $index}}, {{end}}{{$param.Name}} {{$param.Type}}{{end}}]{{end}}({{ $field.Name | bigCamelToSmallCamel }} {{ $field.Type }}) {{ $.StructName }}Option{{if $.GenericParams}}[{{range $index, $param := $.GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}} {
 	return func({{ $.NewStructName }} *{{ $.StructName }}{{if $.GenericParams}}[{{range $index, $param := $.GenericParams}}{{if $index}}, {{end}}{{$param.Name}}{{end}}]{{end}}) {
 		{{ $.NewStructName }}.{{ $field.Name }} = {{ $field.Name | bigCamelToSmallCamel }}
 	}

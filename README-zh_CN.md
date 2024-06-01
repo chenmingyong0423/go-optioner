@@ -26,6 +26,7 @@ Usage:
 Flags:
          -type <struct name>
          -output <output path>, default: srcDir/opt_xxx_gen.go
+         -with_prefix <the prefix of the With{filed_name} function>, default is With{filed_name}.If specified, such as User, it will generate WithUser{filed_name}
          -mode <the file writing mode>, default: write
          there are two available modes:
                  - write(Write/Overwrite): Overwrites or creates a new file.
@@ -37,7 +38,8 @@ Flags:
 
 - `-type`: 指定目标结构体的名称，这是一个必需参数。
 - `-output`: 设置生成代码的输出文件路径。这是一个可选参数，默认生成的文件名格式为 `opt_{StructName}_gen.go`，其中 `{StructName}` 是结构体的名称，文件位于当前目录下。
-- `mode`: 定义文件写入方式，接受的值有：
+- `-with_prefix`：设置 With{filed_name} 函数的前缀。这是一个可选参数，默认值为 With{filed_name}。如果指定了前缀，例如 User，则生成的函数名将变为 WithUser{filed_name}。
+- `-mode`: 定义文件写入方式，接受的值有：
   - `write`（写入/覆盖）：如果文件已存在，将其覆盖；如果文件不存在，创建新文件。
   - `append`（追加）：将内容追加到现有文件的末尾。
 
